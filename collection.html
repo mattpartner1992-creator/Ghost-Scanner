@@ -3,60 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ghost Collection</title>
+  <title>Ghost Journal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="bg-gradient-to-b from-gray-900 via-purple-900 to-black text-white min-h-screen flex flex-col">
+<body class="bg-gradient-to-b from-gray-900 to-black text-white min-h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="bg-black/80 p-4 flex justify-between items-center border-b border-green-500/20">
-    <div class="flex items-center gap-2">
-      <span class="text-green-400 text-2xl">📦</span>
-      <h1 class="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Your Ghosts</h1>
-    </div>
-    <div class="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/30">
-      <span class="text-yellow-400">🪙</span>
-      <span id="coinCount" class="font-bold text-yellow-400">0</span>
-    </div>
+  <header class="p-4 text-center border-b border-green-500/20">
+    <h1 class="text-2xl font-bold text-green-400">📖 Ghost Journal</h1>
+    <p class="text-sm text-gray-400">Explore zones to unlock new spirits</p>
   </header>
 
-  <!-- Collection List -->
-  <main class="p-4">
-    <div id="ghostList" class="grid grid-cols-2 gap-4">
-      <!-- Ghost cards will be injected here -->
+  <main class="p-4 grid grid-cols-2 gap-4">
+    <div class="ghost-card" data-zone="Forest Ruins">
+      <img src="ghost-forest.png" class="w-full rounded shadow" />
+      <h2 class="text-lg font-bold mt-2">Forest Wisp</h2>
+      <p class="text-sm text-gray-300">A flickering spirit that guards ancient trees.</p>
+    </div>
+
+    <div class="ghost-card" data-zone="Seaside Graveyard">
+      <img src="ghost-sea.png" class="w-full rounded shadow" />
+      <h2 class="text-lg font-bold mt-2">Drowned Echo</h2>
+      <p class="text-sm text-gray-300">Its voice rides the tide, calling from the deep.</p>
+    </div>
+
+    <div class="ghost-card" data-zone="Abandoned Arcade">
+      <img src="ghost-arcade.png" class="w-full rounded shadow" />
+      <h2 class="text-lg font-bold mt-2">Glitchling</h2>
+      <p class="text-sm text-gray-300">A corrupted sprite trapped in neon limbo.</p>
     </div>
   </main>
 
-  <!-- Footer Navigation -->
-  <nav class="bg-black/90 p-2 border-t border-green-500/20 flex justify-around text-sm">
-    <a href="index.html" class="text-gray-400 hover:text-green-300">Hunt</a>
-    <a href="collection.html" class="text-green-400">Collection</a>
-    <a href="shop.html" class="text-gray-400 hover:text-green-300">Shop</a>
-  </nav>
-
   <script>
-    const coinCount = document.getElementById("coinCount");
-    const ghostList = document.getElementById("ghostList");
-    const coins = parseInt(localStorage.getItem("coins")) || 0;
-    coinCount.textContent = coins;
-
-    // Simulated ghost data
-    const ghosts = JSON.parse(localStorage.getItem("ghosts")) || [
-      { name: "Wisp", rarity: "Common", value: 10 },
-      { name: "Phantom", rarity: "Rare", value: 25 },
-      { name: "Specter", rarity: "Epic", value: 50 }
-    ];
-
-    ghosts.forEach((ghost) => {
-      const card = document.createElement("div");
-      card.className = "bg-black/50 border border-green-500/30 p-3 rounded-lg text-center";
-      card.innerHTML = `
-        <h3 class="text-lg font-bold text-green-300">${ghost.name}</h3>
-        <p class="text-sm text-gray-300">${ghost.rarity}</p>
-        <p class="text-yellow-400">🪙 ${ghost.value}</p>
-      `;
-      ghostList.appendChild(card);
+    const unlocked = JSON.parse(localStorage.getItem("unlockedGhosts")) || [];
+    document.querySelectorAll(".ghost-card").forEach(card => {
+      const zone = card.dataset.zone;
+      if (!unlocked.includes(zone)) {
+        card.querySelector("img").style.filter = "grayscale(100%) brightness(0.5)";
+        card.querySelector("h2").textContent = "???";
+        card.querySelector("p").textContent = "Unknown spirit. Explore to reveal.";
+      }
     });
   </script>
 </body>
