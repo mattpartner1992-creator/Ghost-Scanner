@@ -1,8 +1,9 @@
 let coins = parseInt(localStorage.getItem("coins")) || 0;
 let steps = parseInt(localStorage.getItem("steps")) || 0;
 let ghostAngle = null;
-let userHeading = 0;
 let ghostActive = false;
+let userHeading = 0;
+let smoothedHeading = 0;
 
 const coinCount = document.getElementById("coinCount");
 const feedback = document.getElementById("feedback");
@@ -27,7 +28,7 @@ document.body.addEventListener("click", () => {
 
 // Ghost spawn logic based on steps
 function trySpawnGhost() {
-  if (!ghostActive && steps > 10 && Math.random() < steps / 100) {
+  if (!ghostActive && steps >= 20 && Math.random() < steps / 200) {
     ghostAngle = Math.floor(Math.random() * 360);
     ghostActive = true;
     feedback.textContent = "Ghost detected! Rotate to align";
@@ -41,7 +42,7 @@ function drawRadar() {
 
   let proximity = 0;
   if (ghostActive && ghostAngle !== null) {
-    let delta = Math.abs(userHeading - ghostAngle);
+    let delta = Math.abs(smoothedHeading - ghostAngle);
     if (delta > 180) delta = 360 - delta;
     proximity = Math.max(0, 180 - delta);
   }
@@ -68,7 +69,7 @@ function drawRadar() {
     radarCtx.fill();
   }
 
-  const userRad = (userHeading - 90) * (Math.PI / 180);
+  const userRad = (smoothedHeading - 90) * (Math.PI / 180);
   const arrowX = centerX + 60 * Math.cos(userRad);
   const arrowY = centerY + 60 * Math.sin(userRad);
   radarCtx.strokeStyle = "#facc15";
@@ -84,14 +85,16 @@ function animateRadar() {
 }
 animateRadar();
 
-// Orientation tracking
+// Orientation tracking with smoothing
 window.addEventListener("deviceorientation", (event) => {
   if (event.alpha !== null) {
     userHeading = Math.round(event.alpha);
-    direction.textContent = ["⬅️", "➡️", "⬆️", "⬇️"][Math.floor(userHeading / 90) % 4];
+    smoothedHeading += (userHeading - smoothedHeading) * 0.1;
+
+    direction.textContent = ["⬅️", "➡️", "⬆️", "⬇️"][Math.floor(smoothedHeading / 90) % 4];
 
     if (ghostActive && ghostAngle !== null) {
-      const delta = Math.abs(userHeading - ghostAngle);
+      const delta = Math.abs(smoothedHeading - ghostAngle);
       const aligned = delta < 10 || delta > 350;
 
       if (aligned) {
