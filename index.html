@@ -33,15 +33,14 @@
     </div>
   </div>
 
-  <!-- Radar UI -->
+  <!-- Radar UI and Game Logic -->
   <main class="p-4 text-center">
     <div id="radar" class="my-4 flex flex-col items-center">
       <canvas id="radarCanvas" width="200" height="200" class="mb-2"></canvas>
-      <div class="text-sm text-gray-300">Rotate your device to find the ghost</div>
+      <div class="text-sm text-gray-300">Move around and rotate to find ghosts</div>
     </div>
 
-    <button id="scanBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full mb-4">Start Scan</button>
-    <div id="feedback" class="text-sm text-gray-300 mb-2">Status: Idle</div>
+    <div id="feedback" class="text-sm text-gray-300 mb-2">Status: Searching...</div>
     <div id="direction" class="text-2xl">⬅️</div>
 
     <div id="ghost" class="hidden mt-4">
@@ -62,14 +61,17 @@
     <a href="shop.html" class="text-gray-400 hover:text-green-300">Shop</a>
   </nav>
 
+  <!-- Scripts -->
   <script src="script.js"></script>
   <script>
+    // Register service worker
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js").then(() =>
         console.log("Service Worker Registered")
       );
     }
 
+    // Start camera
     const camera = document.getElementById("camera");
     async function startCamera() {
       try {
