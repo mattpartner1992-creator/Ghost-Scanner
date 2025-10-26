@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spirit Hunter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-gradient-to-b from-gray-900 via-purple-900 to-black text-white min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-black/80 p-4 flex justify-between items-center border-b border-green-500/20">
+    <div class="flex items-center gap-2">
+      <span class="text-green-400 text-2xl">👻</span>
+      <h1 class="text-xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">Spirit Hunter</h1>
+    </div>
+    <div class="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/30">
+      <span class="text-yellow-400">🪙</span>
+      <span id="coinCount" class="font-bold text-yellow-400">0</span>
+    </div>
+  </header>
+
+  <!-- Camera Overlay -->
+  <div class="flex-1 relative">
+    <video id="camera" autoplay playsinline class="absolute inset-0 w-full h-full object-cover"></video>
+    <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xl">[Camera View]</div>
+
+    <!-- 👻 Animated Ghost Overlay -->
+    <div id="ghostOverlay" class="absolute inset-0 flex items-center justify-center pointer-events-none hidden">
+      <img src="ghost.png" alt="Ghost" class="w-32 h-32 animate-float ghost-glow" />
+    </div>
+  </div>
+
+  <!-- Radar UI -->
+  <main class="p-4 text-center">
+    <div id="radar" class="my-4 flex flex-col items-center">
+      <canvas id="radarCanvas" width="200" height="200" class="mb-2"></canvas>
+      <div class="text-sm text-gray-300">Rotate your device to find the ghost</div>
+    </div>
+
+    <button id="scanBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full mb-4">Start Scan</button>
+    <div id="feedback" class="text-sm text-gray-300 mb-2">Status: Idle</div>
+    <div id="direction" class="text-2xl">⬅️</div>
+
+    <div id="ghost" class="hidden mt-4">
+      <p class="text-green-400">Ghost Found!</p>
+      <button id="huntBtn" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-full">Hunt</button>
+    </div>
+
+    <div id="minigame" class="hidden mt-4">
+      <p class="text-yellow-400">Tap rapidly to capture!</p>
+      <button id="tapBtn" class="bg-yellow-500 text-black px-4 py-2 rounded-full">Tap!</button>
+    </div>
+  </main>
+
+  <!-- Footer Navigation -->
+  <nav class="bg-black/90 p-2 border-t border-green-500/20 flex justify-around text-sm">
+    <a href="index.html" class="text-green-400">Hunt</a>
+    <a href="collection.html" class="text-gray-400 hover:text-green-300">Collection</a>
+    <a href="shop.html" class="text-gray-400 hover:text-green-300">Shop</a>
+  </nav>
+
+  <script src="script.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").then(() =>
+        console.log("Service Worker Registered")
+      );
+    }
+
+    const camera = document.getElementById("camera");
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        camera.srcObject = stream;
+      } catch (err) {
+        console.error("Camera access denied:", err);
+      }
+    }
+    startCamera();
+  </script>
+</body>
+</html>

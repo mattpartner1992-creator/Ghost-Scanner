@@ -1,0 +1,19 @@
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 2s ease-in-out infinite;
+}
+
+.ghost-glow {
+  filter: drop-shadow(0 0 10px #8b5cf6) brightness(1.2);
+  transition: opacity 0.5s ease;
+}
+
+#radarCanvas {
+  background: radial-gradient(circle at center, #1f2937 0%, #111827 100%);
+  border: 2px solid #10b981;
+  border-radius: 50%;
+}
